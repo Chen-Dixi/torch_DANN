@@ -119,7 +119,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                     b_size = src_input.size(0)
                     label = torch.full((b_size,), label_fromsrc ,device=device)
                     # domain classifier has two input parameters
-                    src_domain_output = domain_classifier(src_feature,lambda_p)
+                    src_domain_output = domain_classifier(src_feature,lambda_p).view(-1)
                     domain_corrects += torch.sum(src_domain_output.detach().squeeze() >= 0.5)
 
                     lossD_src = domain_criterion(src_domain_output, label)
@@ -130,7 +130,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                     b_size = tgt_input.size(0)
                     label = torch.full((b_size,), label_fromtgt ,device=device)
 
-                    tgt_domain_output = domain_classifier(tgt_feature,lambda_p)
+                    tgt_domain_output = domain_classifier(tgt_feature,lambda_p).view(-1)
                     domain_corrects += torch.sum(tgt_domain_output.detach().squeeze() < 0.5)
                     lossD_tgt = domain_criterion(tgt_domain_output, label)
                     
@@ -163,7 +163,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
             if phase == 'val':
                 #see target accuracy
                 print("val:")
-                print('source acc: {:.4f}%\ttarget acc:{:.4f}%\tdomain acc:{:.4f}%'.format( 100. * float(src_corrects) / src_data_sum, float(tgt_corrects)/tgt_data_sum),float(domain_corrects)/(src_data_sum+tgt_data_sum))
+                print('source acc: {:.4f}%\ttarget acc:{:.4f}%\tdomain acc:{:.4f}%'.format( 100. * float(src_corrects) / src_data_sum, float(tgt_corrects)/tgt_data_sum,float(domain_corrects)/(src_data_sum+tgt_data_sum)))
                 moduleF.save_model('model','_epoch:_{}'.format(epoch),feature_extractor)
                 moduleF.save_model('model','_epoch:_{}'.format(epoch),class_classifier)
                 moduleF.save_model('model','_epoch:_{}'.format(epoch),domain_classifier)
@@ -179,7 +179,7 @@ source_trainloader, source_testloader = datasetsFactory.create_data_loader("MNIS
 target_trainloader, target_testloader = datasetsFactory.create_data_loader("MNIST_M",mnistmdata_path,batch_size)
 
 
-dcnn_mnist2mnistm(source_trainloader,source_testloader,target_trainloader,target_testloader)
+dcnn_mnist2mnistm(source_trainloader,source_testloader,target_trainloader,target_testloader,n_epoch=50)
 
 
 
