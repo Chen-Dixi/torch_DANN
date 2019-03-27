@@ -10,8 +10,8 @@ import torch.optim as optim
 from models.models import Feature_Extractor,Class_classifier,Domain_classifier
 import numpy as np
 # experiment parameter
-mnistdata_path= "../../data"
-mnistmdata_path= "../../data/MNIST_M"
+mnistdata_path= "../data"
+mnistmdata_path= "../data/MNIST_M"
 gamma=10
 batch_size = 512
 theta = 1
