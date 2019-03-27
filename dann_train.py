@@ -66,11 +66,12 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                 domain_classifier.eval()
             # get inputs from two dataloader in an iteration
             zip_loader = zip(src_loader[phase],tgt_loader[phase])
-
+            start_steps = epoch * min(len(src_loader[phase]),len(tgt_loader[phase]))
+            total_steps = n_epochs * min(len(src_loader[phase]),len(tgt_loader[phase]))
             for batch_idx, (src_data, tgt_data) in enumerate(zip_loader):
 
                 #'p' is the training progress linearly changing from 0 to 1
-                p = (batch_idx + epoch*len(zip_loader)) / (n_epoch*len(zip_loader))
+                p = (batch_idx + start_steps)) / total_steps
                 #'λ' is initiated at 0 and is gradually changed to 1 using the following schedule:
                 lambda_p = 2.0 / (1. + np.exp(-gamma*p)) - 1.0
 
