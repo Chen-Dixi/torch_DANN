@@ -6,7 +6,7 @@ __pycache__/
 #pytorch model parameter file
 .pth
 .tar
-
+log/
 # C extensions
 *.so
 
