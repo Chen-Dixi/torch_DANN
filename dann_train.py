@@ -116,7 +116,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                     ###########################
                     ## Train with all source batch
                     b_size = src_input.size(0)
-                    label = torch.full((b_size,), label_fromsrc ,device=device)
+                    label = torch.full((b_size,), label_fromsrc ,device=device).long()
                     # domain classifier has two input parameters
                     src_domain_output = domain_classifier(src_feature,lambda_p)
                     domain_corrects += torch.sum(src_domain_output.detach().squeeze() >= 0.5)
@@ -127,7 +127,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
 
                     ## Train with all target batch
                     b_size = tgt_input.size(0)
-                    label = torch.full((b_size,), label_fromtgt ,device=device)
+                    label = torch.full((b_size,), label_fromtgt ,device=device).long()
 
                     tgt_domain_output = domain_classifier(tgt_feature,lambda_p)
                     domain_corrects += torch.sum(tgt_domain_output.detach().squeeze() < 0.5)
