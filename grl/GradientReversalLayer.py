@@ -14,4 +14,4 @@ class GradientReversalLayer(function):
         return grad_output , None # return as many tnesors as input to forward
 
     def grad_reverse(x,lambda_p):
-        return GradientReersalLayer.apply(x,lambda_p)
+        return GradientReversalLayer.apply(x,lambda_p)

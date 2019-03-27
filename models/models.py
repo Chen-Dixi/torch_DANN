@@ -55,7 +55,7 @@ class Domain_classifier(nn.Module):
         self.fc2 = nn.Linear(100, 1)
 
     def forward(self, input, lambda_p):
-        input = GradientReversalLayer.apply(input, lambda_p)
+        input = GradientReversalLayer.grad_reverse(input, lambda_p)
         # logits = F.relu(self.bn1(self.fc1(input)))
         # logits = F.log_softmax(self.fc2(logits), 1)
         logits = F.relu(self.fc1(input))
