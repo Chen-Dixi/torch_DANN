@@ -3,6 +3,7 @@ from grl.GradientReversalLayer import GradientReversalLayer
 import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
+import torch
 
 class Feature_Extractor(nn.Module):
 
@@ -59,7 +60,7 @@ class Domain_classifier(nn.Module):
         # logits = F.relu(self.bn1(self.fc1(input)))
         # logits = F.log_softmax(self.fc2(logits), 1)
         logits = F.relu(self.fc1(input))
-        logits = F.sigmoid(self.fc2(logits))
+        logits = torch.sigmoid(self.fc2(logits))
 
         return logits
 

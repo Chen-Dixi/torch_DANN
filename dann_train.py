@@ -18,8 +18,8 @@ theta = 1
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-label_fromsrc = long(1)
-label_fromtgt = long(0)
+label_fromsrc = 1
+label_fromtgt = 0
 
 
 #代码有点长，训练和验证同时进行
@@ -34,7 +34,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
     class_classifier.to(device)
     domain_classifier.to(device)
     #NLL_Loss 
-    domain_criterion = nn.NLLLoss()
+    domain_criterion = nn.BCELoss()
     class_criterion = nn.NLLLoss()
 
     #init optimizer
@@ -66,8 +66,9 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                 domain_classifier.eval()
             # get inputs from two dataloader in an iteration
             zip_loader = zip(src_loader[phase],tgt_loader[phase])
-            start_steps = epoch * min(len(src_loader[phase]),len(tgt_loader[phase]))
-            total_steps = n_epoch * min(len(src_loader[phase]),len(tgt_loader[phase]))
+            zip_loader_len = min(len(src_loader[phase]),len(tgt_loader[phase]))
+            start_steps = epoch * zip_loader_len
+            total_steps = n_epoch * zip_loader_len
             for batch_idx, (src_data, tgt_data) in enumerate(zip_loader):
 
                 #'p' is the training progress linearly changing from 0 to 1
@@ -108,43 +109,43 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
 
                     # loss objectie of classifer
                     lossY = class_criterion(src_classifier_output, src_label)
-                    if phase == 'train':
-                        lossY.backward()
+                    # if phase == 'train':
+                    #     lossY.backward()
 
                     ############################
                     # (2) Update domain_classifier network: 
                     ###########################
                     ## Train with all source batch
                     b_size = src_input.size(0)
-                    label = torch.full((b_size,), label_fromsrc ,device=device).long()
+                    label = torch.full((b_size,), label_fromsrc ,device=device)
                     # domain classifier has two input parameters
                     src_domain_output = domain_classifier(src_feature,lambda_p)
                     domain_corrects += torch.sum(src_domain_output.detach().squeeze() >= 0.5)
 
                     lossD_src = domain_criterion(src_domain_output, label)
-                    if phase == 'train':
-                        lossD_src.backward()
+                    # if phase == 'train':
+                    #     lossD_src.backward()
 
                     ## Train with all target batch
                     b_size = tgt_input.size(0)
-                    label = torch.full((b_size,), label_fromtgt ,device=device).long()
+                    label = torch.full((b_size,), label_fromtgt ,device=device)
 
                     tgt_domain_output = domain_classifier(tgt_feature,lambda_p)
                     domain_corrects += torch.sum(tgt_domain_output.detach().squeeze() < 0.5)
                     lossD_tgt = domain_criterion(tgt_domain_output, label)
                     
-                    if phase == 'train':
-                        lossD_tgt.backward()
-                        optimizer.step()
-
-                    ## pytorch_DANN的训练 procedure
                     # if phase == 'train':
-                    #     domain_loss = lossD_src+lossD_tgt
-                    #     loss = lossY + theta*domain_loss
-                    #     loss.backward()
+                    #     lossD_tgt.backward()
                     #     optimizer.step()
 
-                    if phase == 'train' and ((batch_idx + 1) % 20 == 0 or batch_idx == (len(zip_loader)-1)):
+                    ## pytorch_DANN的训练 procedure
+                    if phase == 'train':
+                        domain_loss = lossD_src+lossD_tgt
+                        loss = lossY + theta*domain_loss
+                        loss.backward()
+                        optimizer.step()
+
+                    if phase == 'train' and ((batch_idx + 1) % 20 == 0 or batch_idx == (zip_loader_len-1)):
                         #print loss
                         print('training:')
                         print('[batch:{}/ total_batch:{} ]\tClass Loss: {:.6f}\tDomain Loss: {:.6f}'.format(batch_idx+1,len(zip_loader),lossY.item(), (lossD_tgt+lossD_src).item() ) )
