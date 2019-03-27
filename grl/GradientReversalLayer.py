@@ -4,7 +4,7 @@ from torch.autograd import Function as function
 class GradientReversalLayer(function):
 
     @staticmethod
-    def farward(ctx,x,lambda_p):
+    def forward(ctx,x,lambda_p):
         ctx.lambda_p = lambda_p
         return x.view_as(x)
 
