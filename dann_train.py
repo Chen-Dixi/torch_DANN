@@ -18,8 +18,8 @@ theta = 1
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-label_fromsrc = 1
-label_fromtgt = 0
+label_fromsrc = long(1)
+label_fromtgt = long(0)
 
 
 #代码有点长，训练和验证同时进行
