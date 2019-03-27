@@ -148,7 +148,7 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                     if phase == 'train' and ((batch_idx + 1) % 20 == 0 or batch_idx == (zip_loader_len-1)):
                         #print loss
                         print('training:')
-                        print('[batch:{}/ total_batch:{} ]\tClass Loss: {:.6f}\tDomain Loss: {:.6f}'.format(batch_idx+1,len(zip_loader),lossY.item(), (lossD_tgt+lossD_src).item() ) )
+                        print('[batch:{}/ total_batch:{} ]\tClass Loss: {:.6f}\tDomain Loss: {:.6f}'.format(batch_idx+1,zip_loader_len,lossY.item(), (lossD_tgt+lossD_src).item() ) )
 
                     ############################
                     # Val state
