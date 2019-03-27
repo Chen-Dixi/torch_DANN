@@ -164,9 +164,11 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                 #see target accuracy
                 print("val:")
                 print('source acc: {:.4f}%\ttarget acc:{:.4f}%\tdomain acc:{:.4f}%'.format( 100. * float(src_corrects) / src_data_sum, float(tgt_corrects)/tgt_data_sum,float(domain_corrects)/(src_data_sum+tgt_data_sum)))
-                moduleF.save_model('model','_epoch:_{}'.format(epoch),feature_extractor)
-                moduleF.save_model('model','_epoch:_{}'.format(epoch),class_classifier)
-                moduleF.save_model('model','_epoch:_{}'.format(epoch),domain_classifier)
+                if (epoch+1) % 10 == 0 or epoch == n_epoch - 1:
+                    print("saving model====")
+                    moduleF.save_model('model','_epoch:_{}'.format(epoch),feature_extractor)
+                    moduleF.save_model('model','_epoch:_{}'.format(epoch),class_classifier)
+                    moduleF.save_model('model','_epoch:_{}'.format(epoch),domain_classifier)
 
 
 
