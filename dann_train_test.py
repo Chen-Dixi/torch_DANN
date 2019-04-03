@@ -194,7 +194,7 @@ def dcnn_test(feature_extractor, class_classifier, domain_classifier,
         #'λ' is initiated at 0 and is gradually changed to 1 using the following schedule:
         lambda_p = 2.0 / (1. + np.exp(-gamma*p)) - 1.0
 
-         inputs, labels = sdata
+        inputs, labels = sdata
         inputs = inputs.to(device)
         labels = labels.to(device)
 

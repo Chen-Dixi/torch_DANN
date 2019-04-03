@@ -48,6 +48,7 @@ optimizer = optim.SGD([{'params': feature_extractor.parameters()},
                         {'params': domain_classifier.parameters()}], lr= 0.01, momentum= 0.9)
 
 for epoch in range(n_epoch):
+    print('Epoch: {}/{}'.format(epoch,n_epoch))
     dann_train_test.dann_train(feature_extractor, 
         class_classifier,
         domain_classifier,
