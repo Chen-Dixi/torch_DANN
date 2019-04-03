@@ -16,7 +16,7 @@ mnistdata_path= "../data"
 mnistmdata_path= "../data/MNIST_M"
 gamma=10
 batch_size = 512
-theta = 1
+n_epoch = 100
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -28,6 +28,8 @@ target_trainloader, target_testloader = datasetsFactory.create_data_loader("MNIS
 feature_extractor = Feature_Extractor()
 class_classifier = Class_classifier()
 domain_classifier = Domain_classifier()
+
+
 #Remember to class fy
 feature_extractor.to(device)
 class_classifier.to(device)
@@ -45,16 +47,22 @@ optimizer = optim.SGD([{'params': feature_extractor.parameters()},
                         {'params': class_classifier.parameters()},
                         {'params': domain_classifier.parameters()}], lr= 0.01, momentum= 0.9)
 
-dann_train_test.dann_train(feature_extractor, 
-    class_classifier,
-    domain_classifier,
-    class_criterion,
-    domain_criterion,
-    source_trainloader,
-    target_trainloader,
-    optimizer,0,2,device=device,closure=trainlog_closure)
+for epoch in range(n_epoch):
+    dann_train_test.dann_train(feature_extractor, 
+        class_classifier,
+        domain_classifier,
+        class_criterion,
+        domain_criterion,
+        source_trainloader,
+        target_trainloader,
+        optimizer,epoch,n_epoch,device=device,closure=trainlog_closure)
 
-dann_train_test.dcnn_test(feature_extractor, class_classifier, domain_classifier, 
-    class_criterion,domain_criterion ,source_testloader,target_testloader,
-    0,2,closure=testlog_closure)
+    dann_train_test.dcnn_test(feature_extractor, class_classifier, domain_classifier, 
+        class_criterion,domain_criterion ,source_testloader,target_testloader,
+        epoch, n_epoch,closure=testlog_closure)
+    if (epoch+1) % 10 == 0 or epoch == n_epoch - 1:
+        print("saving model====")
+        moduleF.save_model('model','_epoch:_{}'.format(epoch),feature_extractor)
+        moduleF.save_model('model','_epoch:_{}'.format(epoch),class_classifier)
+        moduleF.save_model('model','_epoch:_{}'.format(epoch),domain_classifier)
 

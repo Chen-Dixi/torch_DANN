@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#pretrained model file
+model/
+
 #pytorch model parameter file
 .pth
 .tar
