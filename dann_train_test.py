@@ -177,9 +177,9 @@ def dcnn_test(feature_extractor, class_classifier, domain_classifier,
         inputs, labels = sdata
         inputs = inputs.to(device)
         labels = labels.to(device)
+        src_data_sum += inputs.size(0)
 
         src_feature = feature_extractor(inputs)
-        
 
         src_classifier_output = class_classifier(src_feature)
         _, src_preds = torch.max(src_classifier_output,1)
@@ -197,6 +197,7 @@ def dcnn_test(feature_extractor, class_classifier, domain_classifier,
         inputs, labels = sdata
         inputs = inputs.to(device)
         labels = labels.to(device)
+        tgt_data_sum += inputs.size(0)
 
         tgt_feature = feature_extractor(inputs)
         
