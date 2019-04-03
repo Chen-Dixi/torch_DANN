@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from dixitool.pytorch.optim import functional as optimizerF
 from dixitool.pytorch.module import functional as moduleF
-
+import torchvision.utils 
 import torch.optim as optim
 internal_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 label_fromsrc = 1
@@ -53,7 +53,9 @@ def dann_train(feature_extractor, class_classifier, domain_classifier,
         src_label = src_label.to(device)
         tgt_input = tgt_input.to(device)
         tgt_label = tgt_label.to(device)
-
+        
+        #make mnist image to have same shape as mnist-m image
+        src_input = torch.cat((src_input, src_input, src_input), 1)
         #adjust learning rate
         optimizerF.optimizer_scheduler(optimizer,p)
         optimizer.zero_grad()
@@ -177,8 +179,10 @@ def dcnn_test(feature_extractor, class_classifier, domain_classifier,
         inputs, labels = sdata
         inputs = inputs.to(device)
         labels = labels.to(device)
+        
         src_data_sum += inputs.size(0)
-
+        inputs = torc.cat((inputs,inputs,inputs),1)
+        
         src_feature = feature_extractor(inputs)
 
         src_classifier_output = class_classifier(src_feature)
