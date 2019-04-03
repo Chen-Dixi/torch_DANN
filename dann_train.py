@@ -20,8 +20,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 label_fromsrc = 1
 label_fromtgt = 0
-
-
 #代码有点长，训练和验证同时进行
 def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloader, n_epoch=100 ):
     
@@ -171,24 +169,12 @@ def dcnn_mnist2mnistm(src_trainloader,src_testloader,tgt_trainloader,tgt_testloa
                     moduleF.save_model('model','_epoch:_{}'.format(epoch),domain_classifier)
 
 
-
-
-
-
-
 source_trainloader, source_testloader = datasetsFactory.create_data_loader("MNIST",mnistdata_path,batch_size)
 
 target_trainloader, target_testloader = datasetsFactory.create_data_loader("MNIST_M",mnistmdata_path,batch_size)
 
 
 dcnn_mnist2mnistm(source_trainloader,source_testloader,target_trainloader,target_testloader,n_epoch=50)
-
-
-
-
-
-
-
 
 
 
