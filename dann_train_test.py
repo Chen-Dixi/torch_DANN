@@ -181,7 +181,7 @@ def dcnn_test(feature_extractor, class_classifier, domain_classifier,
         labels = labels.to(device)
         
         src_data_sum += inputs.size(0)
-        inputs = torc.cat((inputs,inputs,inputs),1)
+        inputs = torch.cat((inputs,inputs,inputs),1)
         
         src_feature = feature_extractor(inputs)
 
